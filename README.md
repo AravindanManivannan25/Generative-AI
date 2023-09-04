@@ -4,7 +4,7 @@ Flask Question-Answering Web App
 A web application built with Flask and powered by a question-answering model based on the DistilBERT architecture.
 
 # Descriptions
-This Flask web application integrates a question-answering model to provide answers based on user-submitted questions. It supports various document formats, including PDF, DOCX, CSV, and XLSX, allowing users to build a knowledge base dynamically.
+This Flask web application integrates a question-answering model to provide answers based on user-submitted questions. It supports various document formats, including PDF, DOCX, CSV, and XLSX.
 
 # Features
 Supports multiple document formats .
