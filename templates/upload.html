@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Upload</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-3">
+        <h1 class="mt-3">Document Upload</h1>
+        <form id="upload-form" method="post" enctype="multipart/form-data">
+            <input type="file" id="document_upload" name="document_upload" class="form-control">
+            <button type="submit" class="btn btn-primary mt-2">Upload Document</button>
+        </form>
+        <!-- <h3 class="mt-4">Uploaded Documents:</h3> -->
+        <ul id="uploaded-documents">
+            {% for document in uploaded_documents %}
+                <li>
+                    {{ document }}
+                    <form action="/remove-document" method="post">
+                        <input type="hidden" name="filename" value="{{ document }}"><button class="btn btn-danger" type="submit">Remove</button>
+                    </form>
+
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="/qa" class="btn btn-primary">Go to Q/A Page</a>
+    </div>
+
+    <script>
+        document.addEventListener("click", function (e) {
+            if (e.target && e.target.classList.contains("delete-btn")) {
+                const filename = e.target.getAttribute("data-filename");
+                // Remove the corresponding list item from the UI without deleting the file.
+                const listItem = e.target.closest("li");
+                if (listItem) {
+                    listItem.remove();
+                }
+            }
+        });
+    </script>
+    
+</body>
+</html>

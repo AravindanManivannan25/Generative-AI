@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question Answering System</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Add custom styles here if needed */
+        .container {
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        .chat-box {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 50vh;
+            overflow-y: scroll;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .user-message {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .system-message {
+            background-color: #b8e986;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /* Additional styling for the bottom section */
+        .bottom-section {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .top_part{
+            display:flex;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container mt-3">
+        <div class="top_part">
+        <h1 class="mt-3">Question Answering System</h1> 
+        <a href="/upload" class="btn btn-primary">Go to Document Upload Page</a>
+    </div>
+        <div class="chat-box mt-3" id="chat-box">
+            <div class="system-message">Welcome! Upload a document to get started.</div>
+        </div>
+    </div>
+
+    <div class="bottom-section mt-3">
+        <div class="container">
+
+            <form id="user-input-form" method="post">
+                <input style="width: 490px;" type="text" id="user_question" name="user_question" class="form-control">
+                <button type="submit" id="ask-button" class="btn btn-primary">Ask</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userQuestionForm = document.getElementById("user-input-form");
+        const userQuestionInput = document.getElementById("user_question");
+
+        userQuestionForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const userQuestion = userQuestionInput.value;
+
+            if (userQuestion) {
+                // Disable the form while fetching the answer
+                userQuestionInput.disabled = true;
+                userQuestionForm.querySelector("button").disabled = true;
+
+                // Display the user's question immediately
+                displayMessage("user", userQuestion);
+
+                const response = await fetch("/qa", {
+                    method: "POST",
+                    body: JSON.stringify({ user_question: userQuestion }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("data === ",data);
+                    displayMessage("system", data.answer);
+                } else {
+                    console.error("Failed to fetch response.");
+                }
+
+                // Re-enable the form
+                userQuestionInput.disabled = false;
+                userQuestionForm.querySelector("button").disabled = false;
+                userQuestionInput.value = '';
+                userQuestionInput.focus();
+            }
+        });
+
+        function displayMessage(sender, message) {
+            const messageElement = document.createElement("div");
+            messageElement.className = `message ${sender}-message`;
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
